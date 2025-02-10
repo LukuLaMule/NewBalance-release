@@ -5,11 +5,27 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 20 14.3% 4.1%;
+
+    --primary: 38 42% 58%;
+    --primary-foreground: 60 9.1% 97.8%;
+
+    --newbalance-light: 38 42% 58%;
+    --newbalance: 38 42% 40%;
+    --newbalance-dark: 38 42% 27%;
+  }
+
   * {
     @apply border-border;
   }
 
   body {
-    @apply font-montserrat antialiased bg-background text-foreground;
+    @apply font-montserrat bg-background text-foreground antialiased;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-montserrat font-semibold;
   }
 }

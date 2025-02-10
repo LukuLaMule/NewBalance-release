@@ -84,7 +84,7 @@ export function ProductCard({ product }: ProductCardProps) {
 
         <CardHeader className="pb-2 text-center px-4 sm:px-8">
           <motion.h2
-            className="text-2xl sm:text-4xl font-bold mb-3 text-newbalance-dark"
+            className="font-montserrat text-2xl sm:text-4xl font-bold mb-3 text-newbalance-dark"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
@@ -127,7 +127,7 @@ export function ProductCard({ product }: ProductCardProps) {
                 href={product.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2"
+                className="flex items-center gap-2 font-montserrat"
               >
                 Voir sur New Balance <ExternalLink className="w-5 h-5" />
               </a>

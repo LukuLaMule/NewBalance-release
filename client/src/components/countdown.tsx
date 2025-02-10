@@ -5,23 +5,22 @@ interface CountdownProps {
 }
 
 export function Countdown({ targetDate }: CountdownProps) {
-  const [timeLeft, setTimeLeft] = useState("");
+  const [timeLeft, setTimeLeft] = useState<string>("");
 
   useEffect(() => {
     function updateCountdown() {
-      const now = new Date().getTime();
-      const target = targetDate.getTime();
-      const diffInMs = target - now;
+      const now = new Date();
+      const diff = targetDate.getTime() - now.getTime();
 
-      if (diffInMs <= 0) {
+      if (diff <= 0) {
         setTimeLeft("Released");
         return;
       }
 
-      const days = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((diffInMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      const minutes = Math.floor((diffInMs % (1000 * 60 * 60)) / (1000 * 60));
-      const seconds = Math.floor((diffInMs % (1000 * 60)) / 1000);
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
 
       const formattedHours = hours.toString().padStart(2, '0');
       const formattedMinutes = minutes.toString().padStart(2, '0');
@@ -34,15 +33,15 @@ export function Countdown({ targetDate }: CountdownProps) {
       }
     }
 
+    updateCountdown(); // Call immediately
     const timer = setInterval(updateCountdown, 1000);
-    updateCountdown();
 
     return () => clearInterval(timer);
   }, [targetDate]);
 
   return (
-    <div className="text-3xl sm:text-5xl font-mono font-bold text-newbalance-dark">
-      {timeLeft}
+    <div className="font-mono text-3xl sm:text-5xl font-bold text-newbalance">
+      {timeLeft || "Chargement..."}
     </div>
   );
 }

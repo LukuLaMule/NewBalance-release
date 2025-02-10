@@ -34,14 +34,19 @@ export default function Home() {
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="text-3xl sm:text-5xl font-bold mb-6 sm:mb-12 text-center bg-clip-text text-transparent bg-gradient-to-r from-newbalance-dark to-newbalance"
+          className="font-montserrat text-3xl sm:text-5xl font-bold mb-6 sm:mb-12 text-center bg-gradient-to-r from-newbalance-dark via-newbalance to-newbalance-light bg-clip-text text-transparent"
         >
           New Balance Release Countdown
         </motion.h1>
 
-        <p className="text-center text-lg text-newbalance-dark/70 mb-8">
+        <motion.p 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.6, delay: 0.3 }}
+          className="text-center text-lg text-newbalance-dark/70 mb-8 font-medium"
+        >
           Entrez l'URL d'une paire New Balance pour suivre sa date de sortie
-        </p>
+        </motion.p>
 
         {isLoading ? (
           <div className="w-full max-w-4xl mx-auto px-4">
