@@ -28,29 +28,30 @@ export function ProductCard({ product }: ProductCardProps) {
         <span className="text-2xl sm:text-4xl font-bold bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-transparent">{product.price}</span>
       </CardHeader>
 
-      <CardContent className="px-4 sm:px-8">
-        <div className="space-y-6 sm:space-y-8 text-center">
-          <div>
+      <CardContent className="px-4 sm:px-6">
+        <div className="space-y-4 sm:space-y-6">
+          <div className="text-center">
             <p className="text-base sm:text-lg text-muted-foreground mb-2">Date de sortie :</p>
             <p className="text-lg sm:text-2xl font-medium text-gray-900">
               {format(new Date(product.releaseDate), "PPP 'à' HH:mm")}
             </p>
           </div>
 
-          <div>
+          <div className="text-center">
             <p className="text-base sm:text-lg text-muted-foreground mb-2">Temps restant :</p>
             <Countdown targetDate={new Date(product.releaseDate)} />
           </div>
 
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+          <div className="space-y-3">
             <NotificationButton 
               productName={product.name}
               releaseDate={new Date(product.releaseDate)}
               productUrl={product.url}
             />
-            <div className="flex items-center gap-2">
+
+            <div className="flex justify-center items-center gap-2">
               <CalendarExport product={product} />
-              <Button variant="outline" size="sm" asChild>
+              <Button variant="outline" size="sm" asChild className="flex-1">
                 <a 
                   href={product.url} 
                   target="_blank" 
@@ -64,7 +65,7 @@ export function ProductCard({ product }: ProductCardProps) {
             </div>
           </div>
 
-          <div className="text-xs sm:text-sm text-muted-foreground border-t pt-4 mt-4">
+          <div className="text-xs text-muted-foreground border-t pt-3">
             Dernière mise à jour : {format(new Date(product.lastUpdated), "Pp")}
           </div>
         </div>
