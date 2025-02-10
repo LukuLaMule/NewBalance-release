@@ -9,36 +9,40 @@ interface ProductCardProps {
 
 export function ProductCard({ product }: ProductCardProps) {
   return (
-    <Card className="overflow-hidden">
-      <img 
-        src={product.imageUrl} 
-        alt={product.name}
-        className="w-full h-48 object-cover"
-      />
-      
+    <Card className="overflow-hidden hover:shadow-lg transition-shadow">
+      <div className="relative h-64">
+        <img 
+          src={product.imageUrl} 
+          alt={product.name}
+          className="w-full h-full object-cover"
+        />
+      </div>
+
       <CardHeader>
-        <div className="flex justify-between items-start">
-          <h2 className="text-xl font-bold">{product.name}</h2>
-          <span className="text-lg font-semibold">{product.price}</span>
+        <div className="flex flex-col gap-2">
+          <h2 className="text-xl font-bold line-clamp-2">{product.name}</h2>
+          <div className="flex justify-between items-center">
+            <span className="text-2xl font-bold text-primary">{product.price}</span>
+          </div>
         </div>
       </CardHeader>
 
       <CardContent>
         <div className="space-y-4">
           <div>
-            <p className="text-sm text-muted-foreground mb-1">Release Date:</p>
+            <p className="text-sm text-muted-foreground mb-1">Date de sortie :</p>
             <p className="font-medium">
               {format(new Date(product.releaseDate), "PPP")}
             </p>
           </div>
 
           <div>
-            <p className="text-sm text-muted-foreground mb-1">Time Until Release:</p>
+            <p className="text-sm text-muted-foreground mb-1">Temps restant :</p>
             <Countdown targetDate={new Date(product.releaseDate)} />
           </div>
 
           <div className="text-xs text-muted-foreground">
-            Last updated: {format(new Date(product.lastUpdated), "Pp")}
+            Dernière mise à jour : {format(new Date(product.lastUpdated), "Pp")}
           </div>
         </div>
       </CardContent>
