@@ -42,13 +42,13 @@ export function ProductCard({ product }: ProductCardProps) {
             <Countdown targetDate={new Date(product.releaseDate)} />
           </div>
 
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <NotificationButton 
               productName={product.name}
               releaseDate={new Date(product.releaseDate)}
               productUrl={product.url}
             />
-            <div className="flex gap-2">
+            <div className="flex items-center gap-2">
               <CalendarExport product={product} />
               <Button variant="outline" size="sm" asChild>
                 <a 
@@ -58,7 +58,7 @@ export function ProductCard({ product }: ProductCardProps) {
                   className="gap-2"
                 >
                   <ExternalLink className="h-4 w-4" />
-                  Voir sur New Balance
+                  Voir
                 </a>
               </Button>
             </div>
