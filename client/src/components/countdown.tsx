@@ -26,7 +26,6 @@ export function Countdown({ targetDate }: CountdownProps) {
       if (days > 0) {
         setTimeLeft(`${days}j ${hours}h ${minutes}m ${seconds}s`);
       } else {
-        // Format HH:MM:SS when less than a day remains
         const formattedHours = hours.toString().padStart(2, '0');
         const formattedMinutes = minutes.toString().padStart(2, '0');
         const formattedSeconds = seconds.toString().padStart(2, '0');
@@ -41,7 +40,7 @@ export function Countdown({ targetDate }: CountdownProps) {
   }, [targetDate]);
 
   return (
-    <div className="text-2xl font-mono font-bold text-primary">
+    <div className="countdown-value">
       {timeLeft}
     </div>
   );

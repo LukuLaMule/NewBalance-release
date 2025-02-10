@@ -4,11 +4,9 @@ import type { Product } from "@shared/schema";
 import { apiRequest } from "@/lib/queryClient";
 
 export default function Home() {
-  // Charger automatiquement la paire New Balance 1906L au démarrage
   const { data: products = [], isLoading } = useQuery<Product[]>({
     queryKey: ["/api/products"],
     async queryFn() {
-      // Si aucun produit n'existe, ajouter automatiquement la paire New Balance
       const res = await fetch("/api/products");
       const products = await res.json();
 
@@ -24,16 +22,18 @@ export default function Home() {
   });
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="container mx-auto py-4 sm:py-8 px-4">
-        <h1 className="text-2xl sm:text-4xl font-bold mb-4 sm:mb-8 text-center">New Balance Release Countdown</h1>
+    <div className="min-h-screen">
+      <div className="container mx-auto py-8 px-4">
+        <h1 className="text-2xl sm:text-5xl font-bold mb-4 sm:mb-8 text-center bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-transparent">
+          New Balance Release Countdown
+        </h1>
 
         {isLoading ? (
-          <div className="w-full max-w-3xl mx-auto px-4">
-            <div className="h-[400px] sm:h-[600px] bg-gray-100 animate-pulse rounded-lg" />
+          <div className="w-full max-w-4xl mx-auto px-4">
+            <div className="h-[400px] sm:h-[600px] bg-white/50 animate-pulse rounded-xl shadow-lg" />
           </div>
         ) : products.length > 0 ? (
-          <div className="w-full max-w-3xl mx-auto px-4">
+          <div className="w-full max-w-4xl mx-auto px-4">
             <ProductCard product={products[0]} />
           </div>
         ) : (
