@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { differenceInSeconds } from "date-fns";
-import { motion } from "framer-motion";
+//import { motion } from "framer-motion"; //Removed as per edit
 
 interface CountdownProps {
   targetDate: Date;
@@ -41,18 +41,8 @@ export function Countdown({ targetDate }: CountdownProps) {
   }, [targetDate]);
 
   return (
-    <motion.div 
-      className="text-3xl sm:text-5xl font-mono font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary/70"
-      initial={{ scale: 0.8, opacity: 0 }}
-      animate={{ scale: 1, opacity: 1 }}
-      transition={{ 
-        duration: 0.5,
-        repeat: Infinity,
-        repeatType: "reverse",
-        repeatDelay: 0.5
-      }}
-    >
+    <div className="text-3xl sm:text-5xl font-mono font-bold text-primary">
       {timeLeft}
-    </motion.div>
+    </div>
   );
 }
