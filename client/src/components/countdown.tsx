@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { differenceInSeconds } from "date-fns";
+import { motion } from "framer-motion";
 
 interface CountdownProps {
   targetDate: Date;
@@ -26,7 +27,6 @@ export function Countdown({ targetDate }: CountdownProps) {
       if (days > 0) {
         setTimeLeft(`${days}j ${hours}h ${minutes}m ${seconds}s`);
       } else {
-        // Format HH:MM:SS when less than a day remains
         const formattedHours = hours.toString().padStart(2, '0');
         const formattedMinutes = minutes.toString().padStart(2, '0');
         const formattedSeconds = seconds.toString().padStart(2, '0');
@@ -41,8 +41,18 @@ export function Countdown({ targetDate }: CountdownProps) {
   }, [targetDate]);
 
   return (
-    <div className="text-2xl font-mono font-bold text-primary">
+    <motion.div 
+      className="text-3xl sm:text-5xl font-mono font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary/70"
+      initial={{ scale: 0.8, opacity: 0 }}
+      animate={{ scale: 1, opacity: 1 }}
+      transition={{ 
+        duration: 0.5,
+        repeat: Infinity,
+        repeatType: "reverse",
+        repeatDelay: 0.5
+      }}
+    >
       {timeLeft}
-    </div>
+    </motion.div>
   );
 }
