@@ -1,0 +1,15 @@
+[Unit]
+Description=New Balance Release Countdown
+After=network.target
+
+[Service]
+Type=simple
+User=luku
+WorkingDirectory=/var/www/release.luku.fr
+Environment=NODE_ENV=production
+Environment=PORT=3000
+ExecStart=/usr/bin/npm start
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
