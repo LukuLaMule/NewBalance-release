@@ -12,7 +12,19 @@ export class NewBalanceScraper extends BaseScraper {
     return url.includes("newbalance.fr");
   }
 
+  private validateUrl(url: string): boolean {
+    // Vérifie si l'URL correspond au format attendu pour New Balance France
+    const urlPattern = /^https?:\/\/(?:www\.)?newbalance\.fr\/fr\/pd\/[^\/]+\/[A-Z0-9-]+\.html$/;
+    return urlPattern.test(url);
+  }
+
   async scrape(url: string): Promise<InsertProduct> {
+    if (!this.validateUrl(url)) {
+      throw new Error(
+        "URL invalide. L'URL doit être au format : https://www.newbalance.fr/fr/pd/[nom-produit]/[reference].html"
+      );
+    }
+
     let retries = 3;
     let lastError;
 
