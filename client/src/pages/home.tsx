@@ -1,27 +1,14 @@
 import { useQuery } from "@tanstack/react-query";
 import { ProductCard } from "@/components/product-card";
 import type { Product } from "@shared/schema";
-import { apiRequest } from "@/lib/queryClient";
 import { motion } from "framer-motion";
 
 export default function Home() {
   const { data: products = [], isLoading } = useQuery<Product[]>({
     queryKey: ["/api/products"],
-    async queryFn() {
-      // Essayer d'abord de récupérer les produits existants
-      const res = await fetch("/api/products");
-      const products = await res.json();
-
-      // Si aucun produit n'existe, lancer le scraping initial
-      if (products.length === 0) {
-        await apiRequest("POST", "/api/products/scrape", {
-          url: "https://www.newbalance.fr/fr/pd/1906l/U1906LV1-48987.html"
-        });
-        const newRes = await fetch("/api/products");
-        return await newRes.json();
-      }
-
-      return products;
+    queryFn: async () => {
+      const response = await fetch("/api/products");
+      return response.json();
     }
   });
 

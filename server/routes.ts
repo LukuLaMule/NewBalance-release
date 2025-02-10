@@ -5,6 +5,8 @@ import axios from "axios";
 import * as cheerio from "cheerio";
 import cron from "node-cron";
 
+const DEFAULT_PRODUCT_URL = "https://www.newbalance.fr/fr/pd/1906l/U1906LV1-48987.html";
+
 async function scrapeProduct(url: string) {
   try {
     const { data } = await axios.get(url, {
@@ -63,8 +65,21 @@ async function scrapeProduct(url: string) {
 
 export function registerRoutes(app: Express): Server {
   app.get("/api/products", async (_req, res) => {
-    const products = await storage.getProducts();
-    res.json(products);
+    try {
+      const products = await storage.getProducts();
+
+      // Si aucun produit n'existe, on scrape le produit par défaut
+      if (products.length === 0) {
+        const productData = await scrapeProduct(DEFAULT_PRODUCT_URL);
+        const newProduct = await storage.upsertProduct(productData);
+        return res.json([newProduct]);
+      }
+
+      res.json(products);
+    } catch (error) {
+      console.error('Error fetching products:', error);
+      res.status(500).json({ error: "Failed to fetch products" });
+    }
   });
 
   app.post("/api/products/scrape", async (req, res) => {
