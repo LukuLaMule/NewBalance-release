@@ -7,6 +7,7 @@ export const products = pgTable("products", {
   url: text("url").notNull(),
   name: text("name").notNull(),
   imageUrl: text("image_url").notNull(),
+  imageUrls: text("image_urls").array().notNull(),
   releaseDate: timestamp("release_date").notNull(),
   price: text("price").notNull(),
   lastUpdated: timestamp("last_updated").notNull(),

@@ -13,6 +13,12 @@ async function scrapeProduct(url: string) {
         url,
         name: "New Balance 1906L",
         imageUrl: "https://nb.scene7.com/is/image/NB/u1906lns_nb_02_i?$pdpflexf2$&qlt=80&fmt=webp&wid=800&hei=800",
+        imageUrls: [
+          "https://nb.scene7.com/is/image/NB/u1906lns_nb_02_i?$pdpflexf2$&qlt=80&fmt=webp&wid=800&hei=800",
+          "https://nb.scene7.com/is/image/NB/u1906lns_nb_03_i?$pdpflexf2$&qlt=80&fmt=webp&wid=800&hei=800",
+          "https://nb.scene7.com/is/image/NB/u1906lns_nb_04_i?$pdpflexf2$&qlt=80&fmt=webp&wid=800&hei=800",
+          "https://nb.scene7.com/is/image/NB/u1906lns_nb_05_i?$pdpflexf2$&qlt=80&fmt=webp&wid=800&hei=800"
+        ],
         price: "140,00 €",
         releaseDate: new Date("2025-02-12T10:00:00+01:00"), // 10:00 Rome time
       };
@@ -32,13 +38,23 @@ async function scrapeProduct(url: string) {
 
     // Sélecteurs mis à jour pour la page New Balance
     const name = $('h1.product-name').text().trim();
-    const imageUrl = $('.product-gallery__image-wrapper img').first().attr('src') || '';
+    const mainImageUrl = $('.product-gallery__image-wrapper img').first().attr('src') || '';
     const price = $('.product-price .sales .value').first().text().trim();
+
+    // Récupérer toutes les images du produit
+    const imageUrls: string[] = [];
+    $('.product-gallery__image-wrapper img').each((_, element) => {
+      const imgUrl = $(element).attr('src');
+      if (imgUrl) {
+        imageUrls.push(imgUrl);
+      }
+    });
 
     const product = {
       url,
       name,
-      imageUrl,
+      imageUrl: mainImageUrl,
+      imageUrls: imageUrls.length > 0 ? imageUrls : [mainImageUrl],
       price,
       releaseDate: new Date("2025-02-12T10:00:00+01:00"), // Date mise à jour avec fuseau horaire
     };
