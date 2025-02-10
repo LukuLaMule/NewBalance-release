@@ -39,6 +39,10 @@ export default function Home() {
           New Balance Release Countdown
         </motion.h1>
 
+        <p className="text-center text-lg text-newbalance-dark/70 mb-8">
+          Entrez l'URL d'une paire New Balance pour suivre sa date de sortie
+        </p>
+
         {isLoading ? (
           <div className="w-full max-w-4xl mx-auto px-4">
             <div className="h-[400px] sm:h-[600px] bg-newbalance-light/10 animate-pulse rounded-lg shadow-xl" />

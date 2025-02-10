@@ -1,49 +1,42 @@
 import { useEffect, useState } from "react";
-import { differenceInSeconds } from "date-fns";
 
 interface CountdownProps {
   targetDate: Date;
 }
 
+const MS_PER_SECOND = 1000;
+const MS_PER_MINUTE = MS_PER_SECOND * 60;
+const MS_PER_HOUR = MS_PER_MINUTE * 60;
+const MS_PER_DAY = MS_PER_HOUR * 24;
+
 export function Countdown({ targetDate }: CountdownProps) {
-  const [timeLeft, setTimeLeft] = useState("");
+  const [timeLeft, setTimeLeft] = useState<string>("Chargement...");
 
   useEffect(() => {
+    function formatNumber(n: number): string {
+      return n.toString().padStart(2, '0');
+    }
+
     function updateCountdown() {
-      try {
-        const now = new Date();
-        const target = new Date(targetDate);
+      const now = new Date().getTime();
+      const target = new Date(targetDate).getTime();
+      const diff = target - now;
 
-        if (isNaN(target.getTime())) {
-          console.error("Invalid target date");
-          setTimeLeft("Date invalide");
-          return;
-        }
-
-        const diffInSeconds = differenceInSeconds(target, now);
-
-        if (diffInSeconds <= 0) {
-          setTimeLeft("Released");
-          return;
-        }
-
-        const days = Math.floor(diffInSeconds / (24 * 60 * 60));
-        const hours = Math.floor((diffInSeconds % (24 * 60 * 60)) / (60 * 60));
-        const minutes = Math.floor((diffInSeconds % (60 * 60)) / 60);
-        const seconds = Math.floor(diffInSeconds % 60);
-
-        if (days > 0) {
-          setTimeLeft(`${days}j ${hours}h ${minutes}m ${seconds}s`);
-        } else {
-          const formattedHours = hours.toString().padStart(2, '0');
-          const formattedMinutes = minutes.toString().padStart(2, '0');
-          const formattedSeconds = seconds.toString().padStart(2, '0');
-          setTimeLeft(`${formattedHours}:${formattedMinutes}:${formattedSeconds}`);
-        }
-      } catch (error) {
-        console.error("Error in countdown:", error);
-        setTimeLeft("Erreur");
+      if (diff <= 0) {
+        setTimeLeft("Released");
+        return;
       }
+
+      const days = Math.floor(diff / MS_PER_DAY);
+      const hours = Math.floor((diff % MS_PER_DAY) / MS_PER_HOUR);
+      const minutes = Math.floor((diff % MS_PER_HOUR) / MS_PER_MINUTE);
+      const seconds = Math.floor((diff % MS_PER_MINUTE) / MS_PER_SECOND);
+
+      setTimeLeft(
+        days > 0
+          ? `${days}j ${formatNumber(hours)}h ${formatNumber(minutes)}m ${formatNumber(seconds)}s`
+          : `${formatNumber(hours)}:${formatNumber(minutes)}:${formatNumber(seconds)}`
+      );
     }
 
     const timer = setInterval(updateCountdown, 1000);
@@ -53,7 +46,7 @@ export function Countdown({ targetDate }: CountdownProps) {
   }, [targetDate]);
 
   return (
-    <div className="text-3xl sm:text-5xl font-mono font-bold text-primary">
+    <div className="font-mono font-bold text-3xl sm:text-5xl text-newbalance-dark">
       {timeLeft}
     </div>
   );
