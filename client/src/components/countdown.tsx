@@ -4,39 +4,34 @@ interface CountdownProps {
   targetDate: Date;
 }
 
-const MS_PER_SECOND = 1000;
-const MS_PER_MINUTE = MS_PER_SECOND * 60;
-const MS_PER_HOUR = MS_PER_MINUTE * 60;
-const MS_PER_DAY = MS_PER_HOUR * 24;
-
 export function Countdown({ targetDate }: CountdownProps) {
-  const [timeLeft, setTimeLeft] = useState<string>("Chargement...");
+  const [timeLeft, setTimeLeft] = useState("");
 
   useEffect(() => {
-    function formatNumber(n: number): string {
-      return n.toString().padStart(2, '0');
-    }
-
     function updateCountdown() {
       const now = new Date().getTime();
-      const target = new Date(targetDate).getTime();
-      const diff = target - now;
+      const target = targetDate.getTime();
+      const diffInMs = target - now;
 
-      if (diff <= 0) {
+      if (diffInMs <= 0) {
         setTimeLeft("Released");
         return;
       }
 
-      const days = Math.floor(diff / MS_PER_DAY);
-      const hours = Math.floor((diff % MS_PER_DAY) / MS_PER_HOUR);
-      const minutes = Math.floor((diff % MS_PER_HOUR) / MS_PER_MINUTE);
-      const seconds = Math.floor((diff % MS_PER_MINUTE) / MS_PER_SECOND);
+      const days = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diffInMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((diffInMs % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((diffInMs % (1000 * 60)) / 1000);
 
-      setTimeLeft(
-        days > 0
-          ? `${days}j ${formatNumber(hours)}h ${formatNumber(minutes)}m ${formatNumber(seconds)}s`
-          : `${formatNumber(hours)}:${formatNumber(minutes)}:${formatNumber(seconds)}`
-      );
+      const formattedHours = hours.toString().padStart(2, '0');
+      const formattedMinutes = minutes.toString().padStart(2, '0');
+      const formattedSeconds = seconds.toString().padStart(2, '0');
+
+      if (days > 0) {
+        setTimeLeft(`${days}j ${formattedHours}h ${formattedMinutes}m ${formattedSeconds}s`);
+      } else {
+        setTimeLeft(`${formattedHours}:${formattedMinutes}:${formattedSeconds}`);
+      }
     }
 
     const timer = setInterval(updateCountdown, 1000);
@@ -46,7 +41,7 @@ export function Countdown({ targetDate }: CountdownProps) {
   }, [targetDate]);
 
   return (
-    <div className="font-mono font-bold text-3xl sm:text-5xl text-newbalance-dark">
+    <div className="text-3xl sm:text-5xl font-mono font-bold text-newbalance-dark">
       {timeLeft}
     </div>
   );
