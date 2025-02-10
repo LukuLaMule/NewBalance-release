@@ -23,7 +23,7 @@ export default function Home() {
   });
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100">
+    <div className="min-h-screen bg-newbalance-light/20">
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -34,14 +34,14 @@ export default function Home() {
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="text-3xl sm:text-5xl font-bold mb-6 sm:mb-12 text-center bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-gray-600"
+          className="text-3xl sm:text-5xl font-bold mb-6 sm:mb-12 text-center bg-clip-text text-transparent bg-gradient-to-r from-newbalance-dark to-newbalance"
         >
           New Balance Release Countdown
         </motion.h1>
 
         {isLoading ? (
           <div className="w-full max-w-4xl mx-auto px-4">
-            <div className="h-[400px] sm:h-[600px] bg-gray-100 animate-pulse rounded-lg shadow-xl" />
+            <div className="h-[400px] sm:h-[600px] bg-newbalance-light/10 animate-pulse rounded-lg shadow-xl" />
           </div>
         ) : products.length > 0 ? (
           <motion.div 
@@ -53,7 +53,7 @@ export default function Home() {
             <ProductCard product={products[0]} />
           </motion.div>
         ) : (
-          <div className="text-center text-gray-500">
+          <div className="text-center text-newbalance-dark/70">
             Chargement du produit...
           </div>
         )}
