@@ -1,7 +1,10 @@
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { Countdown } from "./countdown";
+import { NotificationButton } from "./notification-button";
 import type { Product } from "@shared/schema";
 import { format } from "date-fns";
+import { ExternalLink } from "lucide-react";
 
 interface ProductCardProps {
   product: Product;
@@ -36,6 +39,24 @@ export function ProductCard({ product }: ProductCardProps) {
           <div>
             <p className="text-base sm:text-lg text-muted-foreground mb-2">Temps restant :</p>
             <Countdown targetDate={new Date(product.releaseDate)} />
+          </div>
+
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <NotificationButton 
+              productName={product.name}
+              releaseDate={new Date(product.releaseDate)}
+            />
+            <Button variant="outline" size="sm" asChild>
+              <a 
+                href={product.url} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="gap-2"
+              >
+                <ExternalLink className="h-4 w-4" />
+                Voir sur New Balance
+              </a>
+            </Button>
           </div>
 
           <div className="text-xs sm:text-sm text-muted-foreground border-t pt-4 mt-4">
