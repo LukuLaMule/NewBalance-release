@@ -1,18 +1,24 @@
-version: '3.8'
-
 services:
-  app:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    ports:
-      - "5000:5000"
+  newbalance:
+    container_name: newbalance
+    build: .
     environment:
       - NODE_ENV=production
-      - DATABASE_URL=${DATABASE_URL}
+    volumes:
+      - /home/opc/Docker/NewBalance-release:/app
     restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:5000/api/products"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
+    expose:
+      - 3000  # Expose uniquement en interne pour Traefik
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.newbalance.rule=Host(`release.luku.fr`)"
+      - "traefik.http.routers.newbalance.entrypoints=websecure"
+      - "traefik.http.routers.newbalance.tls.certresolver=lets-encrypt"
+      - "traefik.http.services.newbalance.loadbalancer.server.port=3000"
+    networks:
+      - web
+
+networks:
+  web:
+    external: true
+
