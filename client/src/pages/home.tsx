@@ -8,14 +8,17 @@ export default function Home() {
   const { data: products = [], isLoading } = useQuery<Product[]>({
     queryKey: ["/api/products"],
     async queryFn() {
+      // Essayer d'abord de récupérer les produits existants
       const res = await fetch("/api/products");
       const products = await res.json();
 
+      // Si aucun produit n'existe, lancer le scraping initial
       if (products.length === 0) {
         await apiRequest("POST", "/api/products/scrape", {
           url: "https://www.newbalance.fr/fr/pd/1906l/U1906LV1-48987.html"
         });
-        return [await (await fetch("/api/products")).json()];
+        const newRes = await fetch("/api/products");
+        return await newRes.json();
       }
 
       return products;
@@ -38,15 +41,6 @@ export default function Home() {
         >
           New Balance Release Countdown
         </motion.h1>
-
-        <motion.p 
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.6, delay: 0.3 }}
-          className="text-center text-lg text-newbalance-dark/70 mb-8 font-medium"
-        >
-          Entrez l'URL d'une paire New Balance pour suivre sa date de sortie
-        </motion.p>
 
         {isLoading ? (
           <div className="w-full max-w-4xl mx-auto px-4">
