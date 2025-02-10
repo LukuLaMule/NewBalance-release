@@ -10,39 +10,27 @@ export function Countdown({ targetDate }: CountdownProps) {
 
   useEffect(() => {
     function updateCountdown() {
-      try {
-        const now = new Date();
-        const target = new Date(targetDate);
+      const now = new Date();
+      const diffInSeconds = differenceInSeconds(new Date(targetDate), now);
 
-        if (isNaN(target.getTime())) {
-          console.error("Invalid target date");
-          setTimeLeft("Date invalide");
-          return;
-        }
+      if (diffInSeconds <= 0) {
+        setTimeLeft("Released");
+        return;
+      }
 
-        const diffInSeconds = differenceInSeconds(target, now);
+      const days = Math.floor(diffInSeconds / (24 * 60 * 60));
+      const hours = Math.floor((diffInSeconds % (24 * 60 * 60)) / (60 * 60));
+      const minutes = Math.floor((diffInSeconds % (60 * 60)) / 60);
+      const seconds = Math.floor(diffInSeconds % 60);
 
-        if (diffInSeconds <= 0) {
-          setTimeLeft("Released");
-          return;
-        }
-
-        const days = Math.floor(diffInSeconds / (24 * 60 * 60));
-        const hours = Math.floor((diffInSeconds % (24 * 60 * 60)) / (60 * 60));
-        const minutes = Math.floor((diffInSeconds % (60 * 60)) / 60);
-        const seconds = Math.floor(diffInSeconds % 60);
-
-        if (days > 0) {
-          setTimeLeft(`${days}j ${hours}h ${minutes}m ${seconds}s`);
-        } else {
-          const formattedHours = hours.toString().padStart(2, '0');
-          const formattedMinutes = minutes.toString().padStart(2, '0');
-          const formattedSeconds = seconds.toString().padStart(2, '0');
-          setTimeLeft(`${formattedHours}:${formattedMinutes}:${formattedSeconds}`);
-        }
-      } catch (error) {
-        console.error("Error in countdown:", error);
-        setTimeLeft("Erreur");
+      if (days > 0) {
+        setTimeLeft(`${days}j ${hours}h ${minutes}m ${seconds}s`);
+      } else {
+        // Format HH:MM:SS when less than a day remains
+        const formattedHours = hours.toString().padStart(2, '0');
+        const formattedMinutes = minutes.toString().padStart(2, '0');
+        const formattedSeconds = seconds.toString().padStart(2, '0');
+        setTimeLeft(`${formattedHours}:${formattedMinutes}:${formattedSeconds}`);
       }
     }
 
@@ -53,7 +41,7 @@ export function Countdown({ targetDate }: CountdownProps) {
   }, [targetDate]);
 
   return (
-    <div className="text-3xl sm:text-5xl font-mono font-bold text-primary">
+    <div className="text-2xl font-mono font-bold text-primary">
       {timeLeft}
     </div>
   );
