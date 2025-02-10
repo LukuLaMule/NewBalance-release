@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { ProductCard } from "@/components/product-card";
+import { ProductGrid } from "@/components/product-grid";
 import type { Product } from "@shared/schema";
 import { apiRequest } from "@/lib/queryClient";
 
@@ -29,16 +29,20 @@ export default function Home() {
         </h1>
 
         {isLoading ? (
-          <div className="w-full max-w-4xl mx-auto px-4">
-            <div className="h-[400px] sm:h-[600px] bg-white/50 animate-pulse rounded-xl shadow-lg" />
+          <div className="w-full max-w-6xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              {[1, 2].map((i) => (
+                <div key={i} className="h-[400px] sm:h-[600px] bg-white/50 animate-pulse rounded-xl shadow-lg" />
+              ))}
+            </div>
           </div>
         ) : products.length > 0 ? (
-          <div className="w-full max-w-4xl mx-auto px-4">
-            <ProductCard product={products[0]} />
+          <div className="w-full max-w-6xl mx-auto">
+            <ProductGrid products={products} />
           </div>
         ) : (
           <div className="text-center text-gray-500">
-            Chargement du produit...
+            Chargement des produits...
           </div>
         )}
       </div>

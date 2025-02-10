@@ -2,6 +2,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Countdown } from "./countdown";
 import { NotificationButton } from "./notification-button";
+import { CalendarExport } from "./calendar-export";
 import type { Product } from "@shared/schema";
 import { format } from "date-fns";
 import { ExternalLink } from "lucide-react";
@@ -47,17 +48,20 @@ export function ProductCard({ product }: ProductCardProps) {
               releaseDate={new Date(product.releaseDate)}
               productUrl={product.url}
             />
-            <Button variant="outline" size="sm" asChild>
-              <a 
-                href={product.url} 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="gap-2"
-              >
-                <ExternalLink className="h-4 w-4" />
-                Voir sur New Balance
-              </a>
-            </Button>
+            <div className="flex gap-2">
+              <CalendarExport product={product} />
+              <Button variant="outline" size="sm" asChild>
+                <a 
+                  href={product.url} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="gap-2"
+                >
+                  <ExternalLink className="h-4 w-4" />
+                  Voir sur New Balance
+                </a>
+              </Button>
+            </div>
           </div>
 
           <div className="text-xs sm:text-sm text-muted-foreground border-t pt-4 mt-4">
