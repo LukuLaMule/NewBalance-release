@@ -10,14 +10,11 @@ export const products = pgTable("products", {
   releaseDate: timestamp("release_date").notNull(),
   price: text("price").notNull(),
   lastUpdated: timestamp("last_updated").notNull(),
-  source: text("source").notNull(),  // Ajout du champ source
 });
 
 export const insertProductSchema = createInsertSchema(products).omit({
   id: true,
   lastUpdated: true,
-}).extend({
-  source: z.enum(["newbalance", "nike", "adidas"]), // Liste des sources supportées
 });
 
 export type InsertProduct = z.infer<typeof insertProductSchema>;
