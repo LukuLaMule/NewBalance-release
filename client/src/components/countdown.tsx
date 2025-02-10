@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { differenceInSeconds, format } from "date-fns";
+import { differenceInSeconds } from "date-fns";
 
 interface CountdownProps {
   targetDate: Date;
@@ -12,7 +12,7 @@ export function Countdown({ targetDate }: CountdownProps) {
     function updateCountdown() {
       const now = new Date();
       const diffInSeconds = differenceInSeconds(new Date(targetDate), now);
-      
+
       if (diffInSeconds <= 0) {
         setTimeLeft("Released");
         return;
@@ -23,7 +23,15 @@ export function Countdown({ targetDate }: CountdownProps) {
       const minutes = Math.floor((diffInSeconds % (60 * 60)) / 60);
       const seconds = Math.floor(diffInSeconds % 60);
 
-      setTimeLeft(`${days}d ${hours}h ${minutes}m ${seconds}s`);
+      if (days > 0) {
+        setTimeLeft(`${days}j ${hours}h ${minutes}m ${seconds}s`);
+      } else {
+        // Format HH:MM:SS when less than a day remains
+        const formattedHours = hours.toString().padStart(2, '0');
+        const formattedMinutes = minutes.toString().padStart(2, '0');
+        const formattedSeconds = seconds.toString().padStart(2, '0');
+        setTimeLeft(`${formattedHours}:${formattedMinutes}:${formattedSeconds}`);
+      }
     }
 
     const timer = setInterval(updateCountdown, 1000);
