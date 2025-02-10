@@ -30,46 +30,43 @@ export function ProductCard({ product }: ProductCardProps) {
     const centerX = rect.left + rect.width / 2;
     const centerY = rect.top + rect.height / 2;
 
-    mouseX.set((e.clientX - centerX) * 0.15);
-    mouseY.set((e.clientY - centerY) * 0.15);
+    mouseX.set((e.clientX - centerX) * 0.1);
+    mouseY.set((e.clientY - centerY) * 0.1);
   };
 
+  // Ensure we have valid dates
   const releaseDate = new Date(product.releaseDate);
   const lastUpdated = new Date(product.lastUpdated);
 
   return (
-    <Card className="overflow-hidden bg-white/90 backdrop-blur-sm shadow-xl hover:shadow-2xl transition-all duration-500">
+    <Card className="overflow-hidden bg-white/80 backdrop-blur-sm shadow-xl hover:shadow-2xl transition-all duration-500">
       <motion.div ref={ref} style={{
         transform: isInView ? "none" : "translateY(50px)",
         opacity: isInView ? 1 : 0,
         transition: "all 0.9s cubic-bezier(0.17, 0.55, 0.55, 1) 0.2s"
       }}>
-        <div 
-          className="relative group overflow-hidden cursor-pointer"
+        <div className="relative group overflow-hidden"
           onMouseMove={handleMouseMove}
           onMouseLeave={() => {
             mouseX.set(0);
             mouseY.set(0);
           }}
         >
-          <motion.div 
-            className="relative" 
-            style={{
-              y: smoothY,
-              rotateX: useTransform(mouseY, [-50, 50], [5, -5]),
-              rotateY: useTransform(mouseX, [-50, 50], [-5, 5]),
-            }}
-          >
+          <motion.div className="relative" style={{
+            y: smoothY,
+            rotateX: useTransform(mouseY, [-50, 50], [5, -5]),
+            rotateY: useTransform(mouseX, [-50, 50], [-5, 5]),
+          }}>
             <motion.img
               src={product.imageUrl}
               alt={product.name}
-              className="w-full object-contain bg-gradient-to-b from-newbalance-light/10 to-white p-4 sm:p-8"
+              className="w-full object-contain bg-gradient-to-b from-gray-50 to-white p-4 sm:p-8 group-hover:scale-105 transition-transform duration-500"
               style={{
                 maxHeight: "500px",
                 width: "100%",
                 objectFit: "contain",
               }}
-              whileHover={{ scale: 1.05 }}
+              whileHover={{ scale: 1.02 }}
               transition={{ type: "spring", stiffness: 300 }}
             />
             <motion.div
@@ -84,7 +81,7 @@ export function ProductCard({ product }: ProductCardProps) {
 
         <CardHeader className="pb-2 text-center px-4 sm:px-8">
           <motion.h2
-            className="font-montserrat text-2xl sm:text-4xl font-bold mb-3 text-newbalance-dark"
+            className="text-2xl sm:text-4xl font-bold mb-3 text-primary"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
@@ -92,7 +89,7 @@ export function ProductCard({ product }: ProductCardProps) {
             {product.name}
           </motion.h2>
           <motion.span
-            className="text-3xl sm:text-5xl font-bold text-newbalance"
+            className="text-3xl sm:text-5xl font-bold text-primary/90"
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.4 }}
@@ -109,31 +106,31 @@ export function ProductCard({ product }: ProductCardProps) {
             transition={{ delay: 0.5 }}
           >
             <div>
-              <p className="text-base sm:text-xl text-newbalance-dark/70 mb-2">Date de sortie :</p>
-              <p className="text-lg sm:text-2xl font-medium text-newbalance">
+              <p className="text-base sm:text-xl text-muted-foreground mb-2">Date de sortie :</p>
+              <p className="text-lg sm:text-2xl font-medium text-primary/90">
                 {format(releaseDate, "PPP 'à' HH:mm")}
               </p>
             </div>
             <div>
-              <p className="text-base sm:text-xl text-newbalance-dark/70 mb-2">Temps restant :</p>
+              <p className="text-base sm:text-xl text-muted-foreground mb-2">Temps restant :</p>
               <Countdown targetDate={releaseDate} />
             </div>
 
             <Button
-              className="w-full sm:w-auto px-8 py-6 text-lg bg-newbalance hover:bg-newbalance-dark text-white transition-colors"
+              className="w-full sm:w-auto px-8 py-6 text-lg bg-primary hover:bg-primary/90 text-white"
               asChild
             >
               <a
                 href={product.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 font-montserrat"
+                className="flex items-center gap-2"
               >
                 Voir sur New Balance <ExternalLink className="w-5 h-5" />
               </a>
             </Button>
 
-            <div className="text-xs sm:text-sm text-newbalance-dark/50 border-t border-newbalance-light/20 pt-4 mt-4">
+            <div className="text-xs sm:text-sm text-muted-foreground border-t pt-4 mt-4 opacity-75">
               Dernière mise à jour : {format(lastUpdated, "Pp")}
             </div>
           </motion.div>

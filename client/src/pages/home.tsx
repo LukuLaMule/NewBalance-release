@@ -1,14 +1,24 @@
 import { useQuery } from "@tanstack/react-query";
 import { ProductCard } from "@/components/product-card";
 import type { Product } from "@shared/schema";
+import { apiRequest } from "@/lib/queryClient";
 import { motion } from "framer-motion";
 
 export default function Home() {
   const { data: products = [], isLoading } = useQuery<Product[]>({
     queryKey: ["/api/products"],
-    queryFn: async () => {
-      const response = await fetch("/api/products");
-      return response.json();
+    async queryFn() {
+      const res = await fetch("/api/products");
+      const products = await res.json();
+
+      if (products.length === 0) {
+        await apiRequest("POST", "/api/products/scrape", {
+          url: "https://www.newbalance.fr/fr/pd/1906l/U1906LV1-48987.html"
+        });
+        return [await (await fetch("/api/products")).json()];
+      }
+
+      return products;
     }
   });
 
@@ -24,7 +34,7 @@ export default function Home() {
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="font-montserrat text-3xl sm:text-5xl font-bold mb-6 sm:mb-12 text-center bg-gradient-to-r from-newbalance-dark via-newbalance to-newbalance-light bg-clip-text text-transparent"
+          className="text-3xl sm:text-5xl font-bold mb-6 sm:mb-12 text-center bg-clip-text text-transparent bg-gradient-to-r from-newbalance-dark to-newbalance"
         >
           New Balance Release Countdown
         </motion.h1>
