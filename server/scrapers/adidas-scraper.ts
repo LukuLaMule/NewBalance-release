@@ -20,20 +20,44 @@ export class AdidasScraper extends BaseScraper {
       });
 
       const $ = cheerio.load(data);
-      
-      // Sélecteurs adaptés au site Adidas
-      const name = $('[data-auto-id="product-title"]').text().trim();
-      const imageUrl = $('[data-auto-id="product-image"] img').first().attr('src') || '';
-      const price = $('[data-auto-id="product-price"]').first().text().trim();
-      const releaseDateText = $('[data-auto-id="product-release-date"]').text().trim();
-      
-      // Parser la date de sortie depuis le texte
-      const releaseDate = new Date(releaseDateText);
+
+      // Récupère le nom du produit
+      const name = $('[data-auto-id="product-title"]').text().trim() ||
+                  $('.gl-heading--m').first().text().trim();
+
+      // Récupère l'URL de l'image principale en HD
+      let imageUrl = $('[data-auto-id="pdp-image-carousel"] img').first().attr('src') ||
+                    $('.pdp-image-viewer img').first().attr('src');
+
+      // Assure qu'on a l'image en HD
+      if (imageUrl) {
+        // Adidas utilise souvent un paramètre de taille dans l'URL
+        imageUrl = imageUrl.replace(/(\?.*)|$/, '?wid=2000&fmt=png-alpha&qlt=90');
+      }
+
+      // Récupère le prix
+      const price = $('[data-auto-id="product-price"] .gl-price').first().text().trim() ||
+                   $('.gl-price-item').first().text().trim();
+
+      // Récupère la date de sortie
+      let releaseDate = new Date();
+      const releaseDateText = $('[data-auto-id="product-release-date"]').text().trim() ||
+                            $('.coming-soon-label').text().trim();
+
+      if (releaseDateText) {
+        // Gère plusieurs formats de date possibles
+        const dateMatch = releaseDateText.match(/(\d{2})\/(\d{2})\/(\d{4})|(\d{4})-(\d{2})-(\d{2})/);
+        if (dateMatch) {
+          const [, day, month, year] = dateMatch;
+          // Suppose que la sortie est à 10h du matin
+          releaseDate = new Date(`${year}-${month}-${day}T10:00:00+01:00`);
+        }
+      }
 
       return {
         url,
         name,
-        imageUrl,
+        imageUrl: imageUrl || '',
         price,
         releaseDate,
         source: "adidas"

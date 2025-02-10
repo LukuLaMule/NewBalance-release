@@ -20,20 +20,44 @@ export class NikeScraper extends BaseScraper {
       });
 
       const $ = cheerio.load(data);
-      
-      // Sélecteurs adaptés au site Nike
-      const name = $('[data-test="product-title"]').text().trim();
-      const imageUrl = $('picture img').first().attr('src') || '';
-      const price = $('.product-price').first().text().trim();
-      const releaseDateText = $('.available-date-component').text().trim();
-      
-      // Parser la date de sortie depuis le texte
-      const releaseDate = new Date(releaseDateText);
+
+      // Récupère le nom du produit
+      const name = $('.product-card__title').text().trim() || 
+                  $('h1[data-test="product-title"]').text().trim();
+
+      // Récupère l'URL de l'image principale en HD
+      let imageUrl = $('.css-viwop1 img[data-component-type="image"]').first().attr('src') || 
+                    $('.react-modal-image-img').first().attr('src') ||
+                    $('.product-card__hero-image img').first().attr('src');
+
+      // Assure qu'on a l'image en HD
+      if (imageUrl) {
+        imageUrl = imageUrl.replace(/(\?.*)|$/, '?wid=2000&hei=2000&fmt=png-alpha');
+      }
+
+      // Récupère le prix
+      const price = $('.product-price').first().text().trim() ||
+                   $('[data-test="product-price"]').first().text().trim();
+
+      // Récupère la date de sortie
+      let releaseDate = new Date();
+      const releaseDateText = $('.available-date-component').text().trim() ||
+                            $('[data-test="product-release-date"]').text().trim();
+
+      if (releaseDateText) {
+        // Gère plusieurs formats de date possibles
+        const dateMatch = releaseDateText.match(/(\d{2})\/(\d{2})\/(\d{4})|(\d{4})-(\d{2})-(\d{2})/);
+        if (dateMatch) {
+          const [, day, month, year] = dateMatch;
+          // Suppose que la sortie est à 10h du matin
+          releaseDate = new Date(`${year}-${month}-${day}T10:00:00+01:00`);
+        }
+      }
 
       return {
         url,
         name,
-        imageUrl,
+        imageUrl: imageUrl || '',
         price,
         releaseDate,
         source: "nike"

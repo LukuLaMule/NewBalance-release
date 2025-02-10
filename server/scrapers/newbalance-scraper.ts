@@ -10,18 +10,6 @@ export class NewBalanceScraper extends BaseScraper {
 
   async scrape(url: string): Promise<InsertProduct> {
     try {
-      // Pour cette URL spécifique, on retourne les données hardcodées
-      if (url.includes("U1906LV1-48987")) {
-        return {
-          url,
-          name: "New Balance 1906L",
-          imageUrl: "https://nb.scene7.com/is/image/NB/u1906lns_nb_02_i?$pdpflexf2$&wid=800&hei=800",
-          price: "140,00 €",
-          releaseDate: new Date("2025-02-12T10:00:00+01:00"),
-          source: "newbalance"
-        };
-      }
-
       const { data } = await axios.get(url, {
         headers: {
           'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
@@ -32,16 +20,38 @@ export class NewBalanceScraper extends BaseScraper {
       });
 
       const $ = cheerio.load(data);
+
+      // Récupère le nom du produit
       const name = $('h1.product-name').text().trim();
-      const imageUrl = $('.product-gallery__image-wrapper img').first().attr('src') || '';
+
+      // Récupère l'URL de l'image principale en HD
+      const imageUrl = $('.product-gallery__image-wrapper img').first().attr('src')?.replace(/(\?.*)|$/, '?$pdpflexf2$&wid=800&hei=800') || '';
+
+      // Récupère le prix
       const price = $('.product-price .sales .value').first().text().trim();
+
+      // Récupère la date de sortie si disponible dans un élément avec data-availability
+      let releaseDate;
+      const availabilityText = $('[data-availability]').text().trim();
+      if (availabilityText) {
+        const matches = availabilityText.match(/Disponible (\d{2})\/(\d{2})\/(\d{4}) à (\d{2}):(\d{2})/);
+        if (matches) {
+          const [, day, month, year, hours, minutes] = matches;
+          releaseDate = new Date(`${year}-${month}-${day}T${hours}:${minutes}:00+01:00`);
+        }
+      }
+
+      // Si pas de date trouvée, utiliser la date par défaut
+      if (!releaseDate) {
+        releaseDate = new Date("2025-02-12T10:00:00+01:00");
+      }
 
       return {
         url,
         name,
         imageUrl,
         price,
-        releaseDate: new Date("2025-02-12T10:00:00+01:00"),
+        releaseDate,
         source: "newbalance"
       };
     } catch (error) {
