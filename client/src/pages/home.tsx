@@ -1,23 +1,14 @@
 import { useQuery } from "@tanstack/react-query";
 import { ProductCard } from "@/components/product-card";
+import { AddProductForm } from "@/components/add-product-form";
 import type { Product } from "@shared/schema";
-import { apiRequest } from "@/lib/queryClient";
 
 export default function Home() {
   const { data: products = [], isLoading } = useQuery<Product[]>({
     queryKey: ["/api/products"],
     async queryFn() {
       const res = await fetch("/api/products");
-      const products = await res.json();
-
-      if (products.length === 0) {
-        await apiRequest("POST", "/api/products/scrape", {
-          url: "https://www.newbalance.fr/fr/pd/1906l/U1906LV1-48987.html"
-        });
-        return [await (await fetch("/api/products")).json()];
-      }
-
-      return products;
+      return res.json();
     }
   });
 
@@ -28,17 +19,21 @@ export default function Home() {
           New Balance Release Countdown
         </h1>
 
+        <AddProductForm />
+
         {isLoading ? (
           <div className="w-full max-w-4xl mx-auto px-4">
             <div className="h-[400px] sm:h-[600px] bg-white/50 animate-pulse rounded-xl shadow-lg" />
           </div>
         ) : products.length > 0 ? (
-          <div className="w-full max-w-4xl mx-auto px-4">
-            <ProductCard product={products[0]} />
+          <div className="grid gap-8 w-full max-w-4xl mx-auto px-4">
+            {products.map((product) => (
+              <ProductCard key={product.url} product={product} />
+            ))}
           </div>
         ) : (
           <div className="text-center text-gray-500">
-            Chargement du produit...
+            Aucun produit suivi. Ajoutez une URL New Balance pour commencer.
           </div>
         )}
       </div>
