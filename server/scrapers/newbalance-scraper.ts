@@ -35,12 +35,20 @@ export class NewBalanceScraper extends BaseScraper {
             'Sec-Fetch-User': '?1',
             'Upgrade-Insecure-Requests': '1',
             'Connection': 'keep-alive',
-            'Referer': 'https://www.newbalance.fr/',
-            'Cookie': 'nbCountry=FR; nbLocale=fr_FR'
+            'Host': 'www.newbalance.fr',
+            'Cookie': 'nbCountry=FR; nbLocale=fr_FR; nbLanguage=fr',
+            'DNT': '1',
           },
-          timeout: 10000,
-          maxRedirects: 5
+          timeout: 15000,
+          maxRedirects: 5,
+          validateStatus: function (status) {
+            return status < 500; // Accepte tous les status sauf 5xx
+          }
         });
+
+        if (data.includes('Access Denied') || data.includes('Robot Detection')) {
+          throw new Error('Détection de robot - accès refusé');
+        }
 
         const $ = cheerio.load(data);
 
@@ -92,8 +100,8 @@ export class NewBalanceScraper extends BaseScraper {
         console.error(`Tentative ${4 - retries}/3 échouée:`, error.message);
         retries--;
         if (retries > 0) {
-          // Attend 2 secondes entre chaque tentative
-          await delay(2000);
+          // Augmente le délai entre les tentatives (5 secondes)
+          await delay(5000);
           continue;
         }
       }
@@ -102,8 +110,10 @@ export class NewBalanceScraper extends BaseScraper {
     // Si toutes les tentatives ont échoué
     throw new Error(
       `Impossible de récupérer les informations du produit New Balance après 3 tentatives. ` +
-      `Dernière erreur: ${lastError?.response?.status === 403 ? 
-        "Le site bloque temporairement les requêtes automatisées. Veuillez réessayer dans quelques minutes." : 
+      `${lastError?.message?.includes('Robot Detection') ? 
+        "Le site a détecté une activité automatisée. Veuillez réessayer plus tard." :
+        lastError?.response?.status === 403 ? 
+        "Le site bloque temporairement les requêtes. Veuillez réessayer dans quelques minutes." : 
         lastError?.message}`
     );
   }
