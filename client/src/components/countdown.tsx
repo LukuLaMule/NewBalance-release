@@ -8,32 +8,36 @@ export function Countdown({ targetDate }: CountdownProps) {
   const [timeLeft, setTimeLeft] = useState<string>("");
 
   useEffect(() => {
-    function updateCountdown() {
+    function calculateTimeLeft() {
       const now = new Date();
-      const diff = targetDate.getTime() - now.getTime();
+      const targetTime = new Date(targetDate).getTime();
+      const currentTime = now.getTime();
+      const difference = targetTime - currentTime;
 
-      if (diff <= 0) {
-        setTimeLeft("Released");
-        return;
+      if (difference <= 0) {
+        return "Released";
       }
 
-      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+      const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((difference % (1000 * 60)) / 1000);
 
-      const formattedHours = hours.toString().padStart(2, '0');
-      const formattedMinutes = minutes.toString().padStart(2, '0');
-      const formattedSeconds = seconds.toString().padStart(2, '0');
+      const parts = [];
 
-      if (days > 0) {
-        setTimeLeft(`${days}j ${formattedHours}h ${formattedMinutes}m ${formattedSeconds}s`);
-      } else {
-        setTimeLeft(`${formattedHours}:${formattedMinutes}:${formattedSeconds}`);
-      }
+      if (days > 0) parts.push(`${days}j`);
+      parts.push(hours.toString().padStart(2, '0'));
+      parts.push(minutes.toString().padStart(2, '0'));
+      parts.push(seconds.toString().padStart(2, '0'));
+
+      return parts.join(':');
     }
 
-    updateCountdown(); // Call immediately
+    function updateCountdown() {
+      setTimeLeft(calculateTimeLeft());
+    }
+
+    updateCountdown();
     const timer = setInterval(updateCountdown, 1000);
 
     return () => clearInterval(timer);
