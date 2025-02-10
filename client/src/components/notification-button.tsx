@@ -7,11 +7,12 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 interface NotificationButtonProps {
   productName: string;
   releaseDate: Date;
+  productUrl: string;
 }
 
 const SIZES = ["44", "44.5", "45", "45.5", "46", "46.5", "47"];
 
-export function NotificationButton({ productName, releaseDate }: NotificationButtonProps) {
+export function NotificationButton({ productName, releaseDate, productUrl }: NotificationButtonProps) {
   const [notificationsEnabled, setNotificationsEnabled] = useState(false);
   const [selectedSize, setSelectedSize] = useState<string>("");
   const { toast } = useToast();
@@ -26,6 +27,12 @@ export function NotificationButton({ productName, releaseDate }: NotificationBut
 
     checkNotificationStatus();
   }, []);
+
+  const openProductPage = (size: string) => {
+    // Ouvre la page dans un nouvel onglet avec la taille pré-sélectionnée
+    const sizeParam = `?size=${size}`;
+    window.open(`${productUrl}${sizeParam}`, '_blank');
+  };
 
   const enableNotifications = async () => {
     if (!selectedSize) {
@@ -59,10 +66,16 @@ export function NotificationButton({ productName, releaseDate }: NotificationBut
         const timeUntilNotification = notificationTime.getTime() - Date.now();
         if (timeUntilNotification > 0) {
           setTimeout(() => {
-            new Notification(`${productName} en ${selectedSize} disponible bientôt !`, {
+            const notification = new Notification(`${productName} en ${selectedSize} disponible bientôt !`, {
               body: `Préparez-vous ! La sortie en taille ${selectedSize} est dans 1 heure.`,
-              icon: '/favicon.ico'
+              icon: '/favicon.ico',
+              tag: 'release-notification',
+              requireInteraction: true,
             });
+
+            notification.onclick = () => {
+              openProductPage(selectedSize);
+            };
           }, timeUntilNotification);
         }
 
@@ -73,16 +86,42 @@ export function NotificationButton({ productName, releaseDate }: NotificationBut
         const timeUntilLastNotification = lastNotificationTime.getTime() - Date.now();
         if (timeUntilLastNotification > 0) {
           setTimeout(() => {
-            new Notification(`${productName} en ${selectedSize} : 5 minutes !`, {
-              body: `La sortie en taille ${selectedSize} est dans 5 minutes ! Préparez-vous à commander.`,
-              icon: '/favicon.ico'
+            const notification = new Notification(`${productName} en ${selectedSize} : 5 minutes !`, {
+              body: `La sortie est dans 5 minutes ! Cliquez pour ouvrir la page.`,
+              icon: '/favicon.ico',
+              tag: 'release-notification',
+              requireInteraction: true,
             });
+
+            notification.onclick = () => {
+              openProductPage(selectedSize);
+            };
           }, timeUntilLastNotification);
+        }
+
+        // Notification au moment de la sortie
+        const releaseNotificationTime = new Date(releaseDate).getTime() - Date.now();
+        if (releaseNotificationTime > 0) {
+          setTimeout(() => {
+            const notification = new Notification(`${productName} en ${selectedSize} : DISPONIBLE !`, {
+              body: `🚨 La paire est sortie ! Cliquez pour l'ajouter au panier !`,
+              icon: '/favicon.ico',
+              tag: 'release-notification',
+              requireInteraction: true,
+            });
+
+            notification.onclick = () => {
+              openProductPage(selectedSize);
+            };
+
+            // Ouvre automatiquement la page
+            openProductPage(selectedSize);
+          }, releaseNotificationTime);
         }
 
         toast({
           title: "Notifications activées",
-          description: `Vous serez notifié pour la taille ${selectedSize} : 1h et 5min avant la sortie`,
+          description: `Vous serez notifié pour la taille ${selectedSize} : 1h, 5min avant et à la sortie avec ajout au panier automatique`,
         });
       }
     } catch (error) {

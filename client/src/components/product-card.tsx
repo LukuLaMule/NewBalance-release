@@ -45,6 +45,7 @@ export function ProductCard({ product }: ProductCardProps) {
             <NotificationButton 
               productName={product.name}
               releaseDate={new Date(product.releaseDate)}
+              productUrl={product.url}
             />
             <Button variant="outline" size="sm" asChild>
               <a 
