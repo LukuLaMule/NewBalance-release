@@ -2,8 +2,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Countdown } from "./countdown";
 import type { Product } from "@shared/schema";
 import { format } from "date-fns";
-import { motion } from "framer-motion";
-import { useInView } from "framer-motion";
+import { motion, useScroll, useTransform, useSpring, useMotionValue, useInView } from "framer-motion";
 import { useRef } from "react";
 
 interface ProductCardProps {
@@ -13,6 +12,25 @@ interface ProductCardProps {
 export function ProductCard({ product }: ProductCardProps) {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: false });
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start end", "end start"],
+  });
+
+  const y = useTransform(scrollYProgress, [0, 1], [-50, 50]);
+  const smoothY = useSpring(y, { stiffness: 100, damping: 30 });
+
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+
+    mouseX.set((e.clientX - centerX) * 0.1);
+    mouseY.set((e.clientY - centerY) * 0.1);
+  };
 
   return (
     <Card className="overflow-hidden bg-white/80 backdrop-blur-sm shadow-xl hover:shadow-2xl transition-all duration-500">
@@ -24,20 +42,42 @@ export function ProductCard({ product }: ProductCardProps) {
           transition: "all 0.9s cubic-bezier(0.17, 0.55, 0.55, 1) 0.2s"
         }}
       >
-        <div className="relative group">
-          <motion.img 
-            src={product.imageUrl} 
-            alt={product.name}
-            className="w-full object-contain bg-gradient-to-b from-gray-50 to-white p-4 sm:p-8 group-hover:scale-105 transition-transform duration-500"
-            style={{ 
-              maxHeight: "500px", 
-              width: "100%", 
-              objectFit: "contain"
+        <div 
+          className="relative group overflow-hidden"
+          onMouseMove={handleMouseMove}
+          onMouseLeave={() => {
+            mouseX.set(0);
+            mouseY.set(0);
+          }}
+        >
+          <motion.div
+            className="relative"
+            style={{
+              y: smoothY,
+              rotateX: useTransform(mouseY, [-50, 50], [5, -5]),
+              rotateY: useTransform(mouseX, [-50, 50], [-5, 5]),
             }}
-            whileHover={{ scale: 1.02 }}
-            transition={{ type: "spring", stiffness: 300 }}
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-white/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+          >
+            <motion.img 
+              src={product.imageUrl} 
+              alt={product.name}
+              className="w-full object-contain bg-gradient-to-b from-gray-50 to-white p-4 sm:p-8 group-hover:scale-105 transition-transform duration-500"
+              style={{ 
+                maxHeight: "500px", 
+                width: "100%", 
+                objectFit: "contain",
+              }}
+              whileHover={{ scale: 1.02 }}
+              transition={{ type: "spring", stiffness: 300 }}
+            />
+            <motion.div 
+              className="absolute inset-0 bg-gradient-to-t from-white/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+              style={{
+                y: useTransform(mouseY, [-50, 50], [10, -10]),
+                x: useTransform(mouseX, [-50, 50], [10, -10]),
+              }}
+            />
+          </motion.div>
         </div>
 
         <CardHeader className="pb-2 text-center px-4 sm:px-8">
