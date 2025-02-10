@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { differenceInSeconds } from "date-fns";
-//import { motion } from "framer-motion"; //Removed as per edit
 
 interface CountdownProps {
   targetDate: Date;
@@ -11,26 +10,39 @@ export function Countdown({ targetDate }: CountdownProps) {
 
   useEffect(() => {
     function updateCountdown() {
-      const now = new Date();
-      const diffInSeconds = differenceInSeconds(new Date(targetDate), now);
+      try {
+        const now = new Date();
+        const target = new Date(targetDate);
 
-      if (diffInSeconds <= 0) {
-        setTimeLeft("Released");
-        return;
-      }
+        if (isNaN(target.getTime())) {
+          console.error("Invalid target date");
+          setTimeLeft("Date invalide");
+          return;
+        }
 
-      const days = Math.floor(diffInSeconds / (24 * 60 * 60));
-      const hours = Math.floor((diffInSeconds % (24 * 60 * 60)) / (60 * 60));
-      const minutes = Math.floor((diffInSeconds % (60 * 60)) / 60);
-      const seconds = Math.floor(diffInSeconds % 60);
+        const diffInSeconds = differenceInSeconds(target, now);
 
-      if (days > 0) {
-        setTimeLeft(`${days}j ${hours}h ${minutes}m ${seconds}s`);
-      } else {
-        const formattedHours = hours.toString().padStart(2, '0');
-        const formattedMinutes = minutes.toString().padStart(2, '0');
-        const formattedSeconds = seconds.toString().padStart(2, '0');
-        setTimeLeft(`${formattedHours}:${formattedMinutes}:${formattedSeconds}`);
+        if (diffInSeconds <= 0) {
+          setTimeLeft("Released");
+          return;
+        }
+
+        const days = Math.floor(diffInSeconds / (24 * 60 * 60));
+        const hours = Math.floor((diffInSeconds % (24 * 60 * 60)) / (60 * 60));
+        const minutes = Math.floor((diffInSeconds % (60 * 60)) / 60);
+        const seconds = Math.floor(diffInSeconds % 60);
+
+        if (days > 0) {
+          setTimeLeft(`${days}j ${hours}h ${minutes}m ${seconds}s`);
+        } else {
+          const formattedHours = hours.toString().padStart(2, '0');
+          const formattedMinutes = minutes.toString().padStart(2, '0');
+          const formattedSeconds = seconds.toString().padStart(2, '0');
+          setTimeLeft(`${formattedHours}:${formattedMinutes}:${formattedSeconds}`);
+        }
+      } catch (error) {
+        console.error("Error in countdown:", error);
+        setTimeLeft("Erreur");
       }
     }
 

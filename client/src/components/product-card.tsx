@@ -34,32 +34,29 @@ export function ProductCard({ product }: ProductCardProps) {
     mouseY.set((e.clientY - centerY) * 0.1);
   };
 
+  // Ensure we have valid dates
+  const releaseDate = new Date(product.releaseDate);
+  const lastUpdated = new Date(product.lastUpdated);
+
   return (
     <Card className="overflow-hidden bg-white/80 backdrop-blur-sm shadow-xl hover:shadow-2xl transition-all duration-500">
-      <motion.div
-        ref={ref}
-        style={{
-          transform: isInView ? "none" : "translateY(50px)",
-          opacity: isInView ? 1 : 0,
-          transition: "all 0.9s cubic-bezier(0.17, 0.55, 0.55, 1) 0.2s"
-        }}
-      >
-        <div
-          className="relative group overflow-hidden"
+      <motion.div ref={ref} style={{
+        transform: isInView ? "none" : "translateY(50px)",
+        opacity: isInView ? 1 : 0,
+        transition: "all 0.9s cubic-bezier(0.17, 0.55, 0.55, 1) 0.2s"
+      }}>
+        <div className="relative group overflow-hidden"
           onMouseMove={handleMouseMove}
           onMouseLeave={() => {
             mouseX.set(0);
             mouseY.set(0);
           }}
         >
-          <motion.div
-            className="relative"
-            style={{
-              y: smoothY,
-              rotateX: useTransform(mouseY, [-50, 50], [5, -5]),
-              rotateY: useTransform(mouseX, [-50, 50], [-5, 5]),
-            }}
-          >
+          <motion.div className="relative" style={{
+            y: smoothY,
+            rotateX: useTransform(mouseY, [-50, 50], [5, -5]),
+            rotateY: useTransform(mouseX, [-50, 50], [-5, 5]),
+          }}>
             <motion.img
               src={product.imageUrl}
               alt={product.name}
@@ -111,12 +108,12 @@ export function ProductCard({ product }: ProductCardProps) {
             <div>
               <p className="text-base sm:text-xl text-muted-foreground mb-2">Date de sortie :</p>
               <p className="text-lg sm:text-2xl font-medium text-primary/90">
-                {format(new Date(product.releaseDate), "PPP 'à' HH:mm")}
+                {format(releaseDate, "PPP 'à' HH:mm")}
               </p>
             </div>
             <div>
               <p className="text-base sm:text-xl text-muted-foreground mb-2">Temps restant :</p>
-              <Countdown targetDate={new Date(product.releaseDate)} />
+              <Countdown targetDate={releaseDate} />
             </div>
 
             <Button
@@ -134,7 +131,7 @@ export function ProductCard({ product }: ProductCardProps) {
             </Button>
 
             <div className="text-xs sm:text-sm text-muted-foreground border-t pt-4 mt-4 opacity-75">
-              Dernière mise à jour : {format(new Date(product.lastUpdated), "Pp")}
+              Dernière mise à jour : {format(lastUpdated, "Pp")}
             </div>
           </motion.div>
         </CardContent>

@@ -13,8 +13,8 @@ async function scrapeProduct(url: string) {
         url,
         name: "New Balance 1906L",
         imageUrl: "https://nb.scene7.com/is/image/NB/u1906lns_nb_02_i?$pdpflexf2$&qlt=80&fmt=webp&wid=800&hei=800",
-        price: "140,00 €",
-        releaseDate: new Date("2025-02-12T10:00:00+01:00"), // 10:00 Rome time
+        price: "170,00 €",
+        releaseDate: new Date("2024-03-15T10:00:00.000Z"), // Date fixe pour le test
       };
     }
 
@@ -30,17 +30,17 @@ async function scrapeProduct(url: string) {
 
     const $ = cheerio.load(data);
 
-    // Sélecteurs mis à jour pour la page New Balance
     const name = $('h1.product-name').text().trim();
     const imageUrl = $('.product-gallery__image-wrapper img').first().attr('src') || '';
     const price = $('.product-price .sales .value').first().text().trim();
 
+    // Date de sortie hardcodée pour le moment
     const product = {
       url,
       name,
       imageUrl,
       price,
-      releaseDate: new Date("2025-02-12T10:00:00+01:00"), // Date mise à jour avec fuseau horaire
+      releaseDate: new Date("2024-03-15T10:00:00.000Z"),
     };
 
     console.log('Scraped product:', product);
