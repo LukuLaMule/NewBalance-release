@@ -15,5 +15,5 @@
 }
 
 .countdown-value {
-  @apply font-mono font-bold text-3xl sm:text-4xl text-primary tracking-wider;
+  @apply font-sans font-bold text-3xl sm:text-4xl text-primary tracking-wider;
 }
