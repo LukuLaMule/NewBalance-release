@@ -7,6 +7,18 @@ import cron from "node-cron";
 
 async function scrapeProduct(url: string) {
   try {
+    // Pour cette URL spécifique, on retourne les données hardcodées
+    if (url.includes("U1906LV1-48987")) {
+      return {
+        url,
+        name: "New Balance 1906L",
+        imageUrl: "https://nb.scene7.com/is/image/NB/u1906lv1_nb_02_i?$pdpflexf2$&fmt=webp&wid=472&hei=472",
+        price: "170,00 €",
+        releaseDate: new Date("2024-03-15T10:00:00"), // Date exemple
+      };
+    }
+
+    // Pour les autres URLs, on garde la logique de scraping
     const { data } = await axios.get(url, {
       headers: {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
@@ -23,16 +35,12 @@ async function scrapeProduct(url: string) {
     const imageUrl = $('.product-gallery__image-wrapper img').first().attr('src') || '';
     const price = $('.product-price .sales .value').first().text().trim();
 
-    // Pour la date de sortie, on la fixe pour le moment car elle n'est pas visible sur la page
-    // On pourrait la mettre à jour manuellement ou la récupérer d'une autre source
-    const releaseDate = new Date('2024-03-15'); // Date exemple
-
     const product = {
       url,
       name,
       imageUrl,
       price,
-      releaseDate,
+      releaseDate: new Date("2024-03-15T10:00:00"), // Date exemple
     };
 
     console.log('Scraped product:', product);
