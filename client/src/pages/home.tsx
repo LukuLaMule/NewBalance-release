@@ -25,15 +25,15 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="container mx-auto py-8 px-4">
-        <h1 className="text-4xl font-bold mb-8 text-center">New Balance Release Countdown</h1>
+      <div className="container mx-auto py-4 sm:py-8 px-4">
+        <h1 className="text-2xl sm:text-4xl font-bold mb-4 sm:mb-8 text-center">New Balance Release Countdown</h1>
 
         {isLoading ? (
-          <div className="max-w-3xl mx-auto">
-            <div className="h-[600px] bg-gray-100 animate-pulse rounded-lg" />
+          <div className="w-full max-w-3xl mx-auto px-4">
+            <div className="h-[400px] sm:h-[600px] bg-gray-100 animate-pulse rounded-lg" />
           </div>
         ) : products.length > 0 ? (
-          <div className="max-w-3xl mx-auto">
+          <div className="w-full max-w-3xl mx-auto px-4">
             <ProductCard product={products[0]} />
           </div>
         ) : (
