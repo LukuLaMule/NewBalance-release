@@ -12,7 +12,7 @@ async function scrapeProduct(url: string) {
       return {
         url,
         name: "New Balance 1906L",
-        imageUrl: "https://nb.scene7.com/is/image/NB/u1906lv1_nb_02_i?$pdpflexf2$&wid=1232&hei=1232&fmt=jpeg",
+        imageUrl: "https://nb.scene7.com/is/image/NB/u1906lns_nb_02_i?$pdpflexf2$&qlt=80&fmt=webp&wid=800&hei=800",
         price: "140,00 €",
         releaseDate: new Date("2025-02-12T10:00:00+01:00"), // 10:00 Rome time
       };
