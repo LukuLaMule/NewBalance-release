@@ -64,20 +64,43 @@ export class NewBalanceScraper extends BaseScraper {
 
         const $ = cheerio.load(data);
 
-        // Récupère le nom du produit
-        const name = $('h1.product-name').text().trim();
+        // Sélecteurs multiples pour le nom du produit
+        let name = $('h1.product-name').text().trim();
+        if (!name) {
+          name = $('.product-detail-name').text().trim();
+        }
+        if (!name) {
+          name = $('.pdp-heading h1').text().trim();
+        }
+        if (!name) {
+          name = $('h1[itemprop="name"]').text().trim();
+        }
         if (!name) {
           throw new Error("Impossible de trouver le nom du produit");
         }
 
-        // Récupère l'URL de l'image principale en HD
-        const imageUrl = $('.product-gallery__image-wrapper img').first().attr('src')?.replace(/(\?.*)|$/, '?$pdpflexf2$&wid=800&hei=800');
+        // Sélecteurs multiples pour l'image
+        let imageUrl = $('.product-gallery__image-wrapper img').first().attr('src');
+        if (!imageUrl) {
+          imageUrl = $('.nb-product-gallery__image img').first().attr('src');
+        }
+        if (!imageUrl) {
+          imageUrl = $('.product-gallery img').first().attr('src');
+        }
         if (!imageUrl) {
           throw new Error("Impossible de trouver l'image du produit");
         }
+        // Assurer la meilleure qualité d'image
+        imageUrl = imageUrl.replace(/(\?.*)|$/, '?$pdpflexf2$&wid=800&hei=800');
 
-        // Récupère le prix
-        const price = $('.product-price .sales .value').first().text().trim();
+        // Sélecteurs multiples pour le prix
+        let price = $('.product-price .sales .value').first().text().trim();
+        if (!price) {
+          price = $('.price-sales').first().text().trim();
+        }
+        if (!price) {
+          price = $('.product-price [itemprop="price"]').first().text().trim();
+        }
         if (!price) {
           throw new Error("Impossible de trouver le prix du produit");
         }
